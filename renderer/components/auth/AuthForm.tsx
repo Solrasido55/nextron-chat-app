@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useSetRecoilState } from "recoil";
-import { isModalOpenState } from "../states/isModalOpen";
+import { isModalOpenState } from "../../states/isModalOpen";
 
 const AuthForm = ({ currentPage, handleUserInfo, userInfo }) => {
   const setIsModalOpen = useSetRecoilState(isModalOpenState);
@@ -22,14 +22,25 @@ const AuthForm = ({ currentPage, handleUserInfo, userInfo }) => {
   }, []);
 
   return (
-    <StForm onChange={handleUserInfo} onSubmit={openModal}>
+    <StForm onSubmit={openModal}>
       <StInputWrap>
         <label>Email</label>
-        <StInput type="text" name="email" ref={inputRef} value={email} />
+        <StInput
+          type="text"
+          name="email"
+          ref={inputRef}
+          value={email}
+          onChange={handleUserInfo}
+        />
       </StInputWrap>
       <StInputWrap>
         <label>Password</label>
-        <StInput type="password" name="password" value={password} />
+        <StInput
+          type="password"
+          name="password"
+          value={password}
+          onChange={handleUserInfo}
+        />
       </StInputWrap>
       <StButton type="submit">{currentPage}</StButton>
       <StFooter>

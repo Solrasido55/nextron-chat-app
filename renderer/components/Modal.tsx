@@ -5,14 +5,14 @@ import { isModalOpenState } from "../states/isModalOpen";
 
 interface ModalProps {
   text: string;
-  confirm: () => void;
+  confirm?: () => void;
 }
 
 const Modal = ({ text, confirm }: ModalProps) => {
   const closeModal = useResetRecoilState(isModalOpenState);
 
   const handleConfirm = () => {
-    confirm();
+    if (confirm !== undefined) confirm();
     closeModal();
   };
 

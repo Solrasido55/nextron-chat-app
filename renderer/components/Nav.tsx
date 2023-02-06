@@ -43,6 +43,7 @@ const StNav = styled.ul`
   height: 100vh;
   padding: 20px 0;
   background-color: lightgray;
+  z-index: 10;
 `;
 
 const StLink = styled.li`

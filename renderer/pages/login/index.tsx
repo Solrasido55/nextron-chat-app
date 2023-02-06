@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Head from "next/head";
 import styled from "@emotion/styled";
-import AuthForm from "../../components/AuthForm";
+import AuthForm from "../../components/auth/AuthForm";
 import { signInWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "../../utils/firebase";
 import Modal from "../../components/Modal";

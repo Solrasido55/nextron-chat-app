@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Head from "next/head";
-import AuthForm from "../../components/AuthForm";
+import AuthForm from "../../components/auth/AuthForm";
 import styled from "@emotion/styled";
-import { auth } from "../../utils/firebase";
+import { auth, fireStore } from "../../utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isModalOpenState } from "../../states/isModalOpen";
@@ -13,6 +13,7 @@ import {
   isAlertToastPopState,
 } from "../../states/alertMessage";
 import { useRouter } from "next/router";
+import { addDoc, collection } from "firebase/firestore";
 
 const Next = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -36,7 +37,11 @@ const Next = () => {
   const signUp = () => {
     const { email, password } = userInfo;
     createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then(user => {
+        addDoc(collection(fireStore, "userList"), {
+          email,
+          uid: user.user.uid,
+        });
         router.push("/login");
       })
       .catch(error => {
