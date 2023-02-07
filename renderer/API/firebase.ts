@@ -1,6 +1,7 @@
 import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   // apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,8 +18,11 @@ const firebaseConfig = {
   messagingSenderId: "326376072213",
   appId: "1:326376072213:web:3b20bf1428ce861e075a1c",
   measurementId: "G-8SVY52GB5H",
+  databaseURL:
+    "https://nextron-chat-app-ead2b-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = getAuth(app);
 export const fireStore = getFirestore(app);
+export const database = getDatabase(app);

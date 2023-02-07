@@ -1,19 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { store } from "../../utils/electronStore";
 import UserList from "../../components/userList/UserList";
+import { auth } from "../../API/firebase";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { currentUserState } from "../../states/currentUser";
+import Nav from "../../components/Nav";
+import AddChatModal from "../../components/chat/AddChatModal";
+import { isChatModalOpenState } from "../../states/chatModalType";
+import ChatList from "../../components/chat/ChatList";
 
 const Home = () => {
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const [tab, setTab] = useState<string>("user");
+
+  const isChatModalOpen = useRecoilValue(isChatModalOpenState);
+
   const router = useRouter();
 
   useEffect(() => {
-    if (!store.get("accessToken")) router.push("/login");
+    if (!auth.currentUser) router.push("/login");
+    if (!currentUser && auth.currentUser) setCurrentUser(auth.currentUser.uid);
   }, []);
+
   return (
-    <StBody>
-      <UserList />
-    </StBody>
+    <>
+      <Nav setTab={setTab} />
+      {isChatModalOpen && <AddChatModal />}
+      <StBody>{tab === "user" ? <UserList /> : <ChatList />}</StBody>
+    </>
   );
 };
 

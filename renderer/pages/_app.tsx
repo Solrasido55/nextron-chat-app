@@ -11,7 +11,6 @@ const App = ({ Component, pageProps }: AppProps) => {
     <RecoilRoot>
       <ThemeProvider theme={theme}>
         <Global styles={global} />
-        <Nav />
         <Component {...pageProps} />
       </ThemeProvider>
     </RecoilRoot>

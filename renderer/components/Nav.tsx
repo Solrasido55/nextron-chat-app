@@ -5,28 +5,28 @@ import User from "public/images/icons/user.png";
 import Chat from "public/images/icons/chat.png";
 import Logout from "public/images/icons/logout.png";
 import { useRouter } from "next/router";
-import { store } from "../utils/electronStore";
+import { auth } from "../API/firebase";
 
-const Nav = () => {
+const Nav = ({ setTab }) => {
   const router = useRouter();
 
   const logout = () => {
-    store.delete("accessToken");
+    auth.signOut();
     router.push("/login");
   };
 
   return (
     <StNav>
       <div>
-        <StLink>
+        <StLink onClick={() => setTab("user")}>
           <Image src={User} alt="user" width={40} height={40} />
         </StLink>
-        <StLink>
-          <Image src={Chat} alt="user" width={40} height={40} />
+        <StLink onClick={() => setTab("chat")}>
+          <Image src={Chat} alt="chat" width={40} height={40} />
         </StLink>
       </div>
       <StLink onClick={logout}>
-        <Image src={Logout} alt="user" width={40} height={40} />
+        <Image src={Logout} alt="logout" width={40} height={40} />
       </StLink>
     </StNav>
   );

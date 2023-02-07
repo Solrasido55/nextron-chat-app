@@ -3,17 +3,17 @@ import Head from "next/head";
 import styled from "@emotion/styled";
 import AuthForm from "../../components/auth/AuthForm";
 import { signInWithEmailAndPassword, User } from "firebase/auth";
-import { auth } from "../../utils/firebase";
-import Modal from "../../components/Modal";
+import { auth } from "../../API/firebase";
+import Modal from "../../components/auth/AuthModal";
 import AlertToast from "../../components/AlertToast";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isModalOpenState } from "../../states/isModalOpen";
+import { isAuthModalOpenState } from "../../states/isAuthModalOpen";
 import {
   errorCodeState,
   isAlertToastPopState,
 } from "../../states/alertMessage";
-import { store } from "../../utils/electronStore";
 import { useRouter } from "next/router";
+import { currentUserState } from "../../states/currentUser";
 
 interface UserWithAccessToken extends User {
   accessToken?: string;
@@ -25,9 +25,10 @@ const Login = () => {
     password: "",
   });
 
-  const isModalOpen = useRecoilValue(isModalOpenState);
-  const setErrorCode = useSetRecoilState(errorCodeState);
+  const isAuthModalOpen = useRecoilValue(isAuthModalOpenState);
   const isAlertToastPop = useRecoilValue(isAlertToastPopState);
+  const setErrorCode = useSetRecoilState(errorCodeState);
+  const setCurrentUser = useSetRecoilState(currentUserState);
 
   const router = useRouter();
 
@@ -43,7 +44,7 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         const user: UserWithAccessToken = userCredential.user;
-        store.set("accessToken", user.accessToken);
+        setCurrentUser(user.uid);
         router.push("/home");
       })
       .catch(error => {
@@ -61,7 +62,9 @@ const Login = () => {
       <Head>
         <title>LOG IN</title>
       </Head>
-      {isModalOpen && <Modal text="로그인 하시겠습니까?" confirm={signIn} />}
+      {isAuthModalOpen && (
+        <Modal text="로그인 하시겠습니까?" confirm={signIn} />
+      )}
       {isAlertToastPop && <AlertToast />}
       <StBody>
         <StHeader>Chat App</StHeader>

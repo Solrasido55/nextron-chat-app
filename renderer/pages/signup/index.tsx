@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import Head from "next/head";
 import AuthForm from "../../components/auth/AuthForm";
 import styled from "@emotion/styled";
-import { auth, fireStore } from "../../utils/firebase";
+import { auth, database } from "../../API/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { isModalOpenState } from "../../states/isModalOpen";
-import Modal from "../../components/Modal";
+import { isAuthModalOpenState } from "../../states/isAuthModalOpen";
+import Modal from "../../components/auth/AuthModal";
 import AlertToast from "../../components/AlertToast";
 import {
   errorCodeState,
   isAlertToastPopState,
 } from "../../states/alertMessage";
 import { useRouter } from "next/router";
-import { addDoc, collection } from "firebase/firestore";
+import { ref, set } from "firebase/database";
 
 const Next = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -21,7 +21,7 @@ const Next = () => {
     password: "",
   });
 
-  const isModalOpen = useRecoilValue(isModalOpenState);
+  const isAuthModalOpen = useRecoilValue(isAuthModalOpenState);
   const setErrorCode = useSetRecoilState(errorCodeState);
   const isAlertToastPop = useRecoilValue(isAlertToastPopState);
 
@@ -38,8 +38,8 @@ const Next = () => {
     const { email, password } = userInfo;
     createUserWithEmailAndPassword(auth, email, password)
       .then(user => {
-        addDoc(collection(fireStore, "userList"), {
-          email,
+        set(ref(database, "users/" + user.user.uid), {
+          email: email,
           uid: user.user.uid,
         });
         router.push("/login");
@@ -55,7 +55,7 @@ const Next = () => {
       <Head>
         <title>SIGN UP</title>
       </Head>
-      {isModalOpen && <Modal text="가입하시겠습니까?" confirm={signUp} />}
+      {isAuthModalOpen && <Modal text="가입하시겠습니까?" confirm={signUp} />}
       {isAlertToastPop && <AlertToast />}
       <StBody>
         <StHeader>Sign Up</StHeader>

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { useResetRecoilState } from "recoil";
-import { isModalOpenState } from "../states/isModalOpen";
+import { isAuthModalOpenState } from "../../states/isAuthModalOpen";
 
 interface ModalProps {
   text: string;
@@ -9,7 +9,7 @@ interface ModalProps {
 }
 
 const Modal = ({ text, confirm }: ModalProps) => {
-  const closeModal = useResetRecoilState(isModalOpenState);
+  const closeModal = useResetRecoilState(isAuthModalOpenState);
 
   const handleConfirm = () => {
     if (confirm !== undefined) confirm();
@@ -17,8 +17,8 @@ const Modal = ({ text, confirm }: ModalProps) => {
   };
 
   return (
-    <StBackground>
-      <StModal>
+    <StBackground onClick={closeModal}>
+      <StModal onClick={e => e.stopPropagation()}>
         <StContent>{text}</StContent>
         <StButtonWrap>
           <StConfirmButton onClick={handleConfirm}>확인</StConfirmButton>

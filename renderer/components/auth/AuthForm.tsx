@@ -2,16 +2,16 @@ import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useSetRecoilState } from "recoil";
-import { isModalOpenState } from "../../states/isModalOpen";
+import { isAuthModalOpenState } from "../../states/isAuthModalOpen";
 
 const AuthForm = ({ currentPage, handleUserInfo, userInfo }) => {
-  const setIsModalOpen = useSetRecoilState(isModalOpenState);
+  const setAuthIsModalOpen = useSetRecoilState(isAuthModalOpenState);
 
   const { email, password } = userInfo;
 
   const openModal = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsModalOpen(true);
+    setAuthIsModalOpen(true);
   };
   const isLogin = currentPage === "Login";
 
@@ -62,6 +62,7 @@ const StForm = styled.form`
   display: flex;
   align-items: center;
   flex-direction: column;
+  z-index: 100;
 `;
 
 const StInput = styled.input`
