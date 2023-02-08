@@ -27,7 +27,7 @@ const Message = ({ messageField }) => {
   );
 };
 
-const StMessage = styled.li<{ isCurrentUser: boolean }>`
+const StMessage = styled.div<{ isCurrentUser: boolean }>`
   display: flex;
   justify-content: ${({ isCurrentUser }) =>
     isCurrentUser ? "flex-end" : "flex-start"};

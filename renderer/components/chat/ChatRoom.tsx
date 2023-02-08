@@ -19,6 +19,8 @@ const ChatRoom = () => {
   const closeChatRoom = useResetRecoilState(currentChatRoomState);
   const currentChatRoom = useRecoilValue(currentChatRoomState);
 
+  const scrollRef = useRef<HTMLDivElement>();
+
   const handleMessageInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     message.current = value;
@@ -34,10 +36,18 @@ const ChatRoom = () => {
     clearMessageInput();
   };
 
+  const scrollToBottom = () => {
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     messageInputRef.current.focus();
     getMessages(currentChatRoom, setPreviousMessages);
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [previousMessages]);
 
   return (
     <StBackground>
@@ -49,6 +59,7 @@ const ChatRoom = () => {
       </StHeader>
       <StBody>
         <StMessageWrap>
+          <div ref={scrollRef} />
           {previousMessages?.map(messageField => {
             return (
               <Message key={messageField.key} messageField={messageField} />
@@ -119,7 +130,7 @@ const StBody = styled.div`
   overflow: scroll;
 `;
 
-const StMessageWrap = styled.ul`
+const StMessageWrap = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
