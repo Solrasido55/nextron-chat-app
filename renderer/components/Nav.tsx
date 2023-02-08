@@ -6,22 +6,36 @@ import Chat from "public/images/icons/chat.png";
 import Logout from "public/images/icons/logout.png";
 import { useRouter } from "next/router";
 import { auth } from "../API/firebase";
+import { useResetRecoilState } from "recoil";
+import { currentChatRoomState } from "../states/currentChatRoom";
 
 const Nav = ({ setTab }) => {
   const router = useRouter();
+  const closeChat = useResetRecoilState(currentChatRoomState);
 
   const logout = () => {
+    closeChat();
     auth.signOut();
     router.push("/login");
+  };
+
+  const openUserTab = () => {
+    setTab("user");
+    closeChat();
+  };
+
+  const openChatTab = () => {
+    setTab("chat");
+    closeChat();
   };
 
   return (
     <StNav>
       <div>
-        <StLink onClick={() => setTab("user")}>
+        <StLink onClick={openUserTab}>
           <Image src={User} alt="user" width={40} height={40} />
         </StLink>
-        <StLink onClick={() => setTab("chat")}>
+        <StLink onClick={openChatTab}>
           <Image src={Chat} alt="chat" width={40} height={40} />
         </StLink>
       </div>

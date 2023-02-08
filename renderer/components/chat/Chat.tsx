@@ -1,8 +1,23 @@
 import styled from "@emotion/styled";
 import React from "react";
+import { useSetRecoilState } from "recoil";
+import {
+  currentChatRoomState,
+  currentChatRoomTitleState,
+} from "../../states/currentChatRoom";
 
-const Chat = ({ email, selectChatRoom }) => {
-  return <StChat onClick={selectChatRoom}>{email}</StChat>;
+const Chat = ({ chatRoom }) => {
+  const setCurrentChatRoom = useSetRecoilState(currentChatRoomState);
+  const setCurrentChatRoomTitle = useSetRecoilState(currentChatRoomTitleState);
+
+  const chatRoomTitle = chatRoom.users.map(user => user.email).join(", ");
+
+  const selectChatRoom = () => {
+    setCurrentChatRoom(chatRoom.key);
+    setCurrentChatRoomTitle(chatRoomTitle);
+  };
+
+  return <StChat onClick={selectChatRoom}>{chatRoomTitle}</StChat>;
 };
 
 const StChat = styled.li`

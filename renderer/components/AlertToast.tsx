@@ -2,7 +2,7 @@ import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { alertMessageState, errorCodeState } from "../states/alertMessage";
+import { alertMessageState, errorCodeState } from "../states/alertMessageState";
 
 const AlertToast = () => {
   const alertMessage = useRecoilValue(alertMessageState);

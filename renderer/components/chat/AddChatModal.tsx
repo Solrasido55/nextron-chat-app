@@ -3,27 +3,37 @@ import React, { useEffect, useState } from "react";
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { chatModalTypeState } from "../../states/chatModalType";
 import { selectedUserState } from "../../states/selectedUserState";
-import { filteredUserListState } from "../../states/userList";
+import { userListState } from "../../states/userListState";
 import { auth } from "../../API/firebase";
 import { addChatRoom } from "../../API/addChatRoom";
-import { currentChatRoomState } from "../../states/currentChatRoom";
-import { currentUserState } from "../../states/currentUser";
+import {
+  currentChatRoomState,
+  currentChatRoomTitleState,
+} from "../../states/currentChatRoom";
+// import { currentUserState } from "../../states/currentUser";
 
 const AddChatModal = () => {
-  const currentUser = useRecoilValue(currentUserState);
+  const currentUser = auth.currentUser.uid;
   const [chatGroup, setChatGroup] = useState<IUser[]>([
     { email: auth.currentUser.email, uid: currentUser },
   ]);
   const closeModal = useResetRecoilState(chatModalTypeState);
   const chatModalType = useRecoilValue(chatModalTypeState);
   const selectedUser = useRecoilValue(selectedUserState);
-  const userList = useRecoilValue(filteredUserListState);
+  const userList = useRecoilValue(userListState);
   const setCurrentChatRoom = useSetRecoilState(currentChatRoomState);
+  const setCurrentChatRoomTitle = useSetRecoilState(currentChatRoomTitleState);
 
   const isPrivate = chatModalType === "private";
 
   const startChat = () => {
     addChatRoom(chatGroup);
+    setCurrentChatRoomTitle(
+      chatGroup
+        .filter(user => user.uid !== currentUser)
+        .map(user => user.email)
+        .join(", ")
+    );
     setCurrentChatRoom(
       chatGroup
         .map(user => user.uid)
@@ -33,17 +43,17 @@ const AddChatModal = () => {
     closeModal();
   };
 
-  const inviteUser = user => {
+  const inviteUser = (user: IUser) => {
     setChatGroup(users => {
       return [...users, user];
     });
   };
 
-  const cancelInvite = user => {
+  const cancelInvite = (user: IUser) => {
     setChatGroup(users => users.filter(invited => invited !== user));
   };
 
-  const handleInvited = user => {
+  const handleInvited = (user: IUser) => {
     if (chatGroup.includes(user)) {
       cancelInvite(user);
     } else {
@@ -52,12 +62,13 @@ const AddChatModal = () => {
   };
 
   useEffect(() => {
-    if (isPrivate)
+    if (isPrivate) {
       setChatGroup([
-        { email: auth.currentUser.email, uid: auth.currentUser.uid },
+        { email: auth.currentUser.email, uid: currentUser },
         selectedUser,
       ]);
-  }, [selectedUser]);
+    }
+  }, []);
 
   return (
     <StBackground onClick={closeModal}>
@@ -66,8 +77,9 @@ const AddChatModal = () => {
           <StContent>{selectedUser.email}</StContent>
         ) : (
           <StContent>
-            {userList.map(user => (
+            {userList?.map(user => (
               <StUser
+                key={user.uid}
                 selected={chatGroup.includes(user)}
                 onClick={() => {
                   handleInvited(user);

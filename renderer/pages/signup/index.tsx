@@ -11,7 +11,7 @@ import AlertToast from "../../components/AlertToast";
 import {
   errorCodeState,
   isAlertToastPopState,
-} from "../../states/alertMessage";
+} from "../../states/alertMessageState";
 import { useRouter } from "next/router";
 import { ref, set } from "firebase/database";
 

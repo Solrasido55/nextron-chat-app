@@ -1,27 +1,17 @@
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import React, { useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { filteredUserListState, userListState } from "../../states/userList";
-import { fireStore, database } from "../../API/firebase";
 import AddChat from "../AddChat";
 import User from "./User";
-import { onValue, ref } from "firebase/database";
+import { getUserList } from "../../API/userList";
+import { useRecoilState } from "recoil";
+import { userListState } from "../../states/userListState";
 
 const UserList = () => {
-  const setUserList = useSetRecoilState(userListState);
-  const filteredUserList = useRecoilValue(filteredUserListState);
-
-  const getUserList = async () => {
-    const userRef = ref(database, "/users");
-    onValue(userRef, snapshot => {
-      const data = snapshot.val();
-      setUserList(Object.values(data));
-    });
-  };
+  // const [userList, setUserList] = useState<IUser[]>(null);
+  const [userList, setUserList] = useRecoilState(userListState);
 
   useEffect(() => {
-    getUserList();
+    getUserList(setUserList);
   }, []);
 
   return (
@@ -32,7 +22,7 @@ const UserList = () => {
       </StHeader>
       <StBody>
         <StUserList>
-          {filteredUserList.map(user => {
+          {userList?.map(user => {
             return <User key={user.uid} user={user} />;
           })}
         </StUserList>
@@ -58,7 +48,7 @@ const StBody = styled.div`
   width: 100%;
   height: 100%;
   padding: 50px 0 0 100px;
-  overflow: hidden;
+  overflow: scroll;
 `;
 
 const StUserList = styled.ul`

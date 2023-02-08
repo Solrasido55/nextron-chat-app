@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import Head from "next/head";
 import styled from "@emotion/styled";
-import AuthForm from "../../components/auth/AuthForm";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { signInWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "../../API/firebase";
 import Modal from "../../components/auth/AuthModal";
+import AuthForm from "../../components/auth/AuthForm";
 import AlertToast from "../../components/AlertToast";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import { isAuthModalOpenState } from "../../states/isAuthModalOpen";
 import {
   errorCodeState,
   isAlertToastPopState,
-} from "../../states/alertMessage";
-import { useRouter } from "next/router";
-import { currentUserState } from "../../states/currentUser";
+} from "../../states/alertMessageState";
 
 interface UserWithAccessToken extends User {
   accessToken?: string;
@@ -28,7 +27,6 @@ const Login = () => {
   const isAuthModalOpen = useRecoilValue(isAuthModalOpenState);
   const isAlertToastPop = useRecoilValue(isAlertToastPopState);
   const setErrorCode = useSetRecoilState(errorCodeState);
-  const setCurrentUser = useSetRecoilState(currentUserState);
 
   const router = useRouter();
 
@@ -42,9 +40,7 @@ const Login = () => {
   const signIn = () => {
     const { email, password } = userInfo;
     signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        const user: UserWithAccessToken = userCredential.user;
-        setCurrentUser(user.uid);
+      .then(() => {
         router.push("/home");
       })
       .catch(error => {

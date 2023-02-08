@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import UserList from "../../components/userList/UserList";
 import { auth } from "../../API/firebase";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { currentUserState } from "../../states/currentUser";
-import Nav from "../../components/Nav";
-import AddChatModal from "../../components/chat/AddChatModal";
+import { useRecoilValue } from "recoil";
 import { isChatModalOpenState } from "../../states/chatModalType";
+import { isChatOpenState } from "../../states/currentChatRoom";
+import Nav from "../../components/Nav";
+import UserList from "../../components/userList/UserList";
+import AddChatModal from "../../components/chat/AddChatModal";
 import ChatList from "../../components/chat/ChatList";
+import ChatRoom from "../../components/chat/ChatRoom";
 
 const Home = () => {
-  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [tab, setTab] = useState<string>("user");
 
+  const isChatOpen = useRecoilValue(isChatOpenState);
   const isChatModalOpen = useRecoilValue(isChatModalOpenState);
 
   const router = useRouter();
 
   useEffect(() => {
     if (!auth.currentUser) router.push("/login");
-    if (!currentUser && auth.currentUser) setCurrentUser(auth.currentUser.uid);
   }, []);
 
   return (
     <>
       <Nav setTab={setTab} />
       {isChatModalOpen && <AddChatModal />}
-      <StBody>{tab === "user" ? <UserList /> : <ChatList />}</StBody>
+      <StBody>
+        {isChatOpen && <ChatRoom />}
+        {tab === "user" ? <UserList /> : <ChatList />}
+      </StBody>
     </>
   );
 };
