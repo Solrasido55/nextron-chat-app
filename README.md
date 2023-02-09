@@ -11,7 +11,7 @@
 - 로그아웃
 
 ### 사용기술
-- Nextron, Firebase, Recoil, Emotion
+- Nextron, React, Typescript, Firebase, Recoil, Emotion
 
 ### 영상
 
