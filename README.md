@@ -13,6 +13,15 @@
 ### 사용기술
 - Nextron, React, Typescript, Firebase, Recoil, Emotion
 
+### 실행방법
+```
+git clone https://github.com/Solrasido55/nextron-chat-app.git
+cd nextron-chat-app
+npm install
+npm run build
+```
+nextron-chat-app/dist 디렉토리 내의 파일 실행
+
 ### 영상
 
 https://user-images.githubusercontent.com/106805946/217510884-2dd9ce57-8927-4011-9829-9cdf4ec6c8f2.mov
